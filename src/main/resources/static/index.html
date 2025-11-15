@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KNCA Signer Example</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/ncalayer-js-client@1.5.6/ncalayer-client.js"></script>
+</head>
+<body>
+    <div id="notification-container"></div>
+    <div class="container">
+        <div class="left-panel">
+            <div class="content-wrapper">
+                <header>
+                    <h1>KNCA Signer Example</h1>
+                    <p>Демонстрация интеграции NCALayer для подписания документов с тестовыми сертификатами при помощи <a target="_blank" href="https://github.com/gleb619/knca-signer">knca-signer</a></p>
+                </header>
+
+                <div class="step-section step-1">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="certificate-image">
+                            <img src="image.png" alt="KNCA Certificate Setup" />
+                            <div class="image-overlay">
+                                <h4>Настройка сертификатов</h4>
+                                <p>Сначала настройте тестовые сертификаты</p>
+                            </div>
+                        </div>
+                        <div class="certificate-instructions">
+                            <h4>Инструкции по настройке</h4>
+                            <ol>
+                                <li>Перейдите по ссылке: <a href="http://localhost:8081" target="_blank">http://localhost:8081</a></li>
+                                <li>В разделе "Certificate Authority" нажмите кнопку "CRT/PEM" для скачивания CA сертификата</li>
+                                <li>В разделе "Пользовательские сертификаты", нажмите кнопку "PKCS12" для скачивания пользовательского сертификата</li>
+                                <li>Сохраните оба файла на своем компьютере</li>
+                            </ol>
+                            <p class="note">⚠️ Важно: Сертификаты нужны для корректного подписания документов</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-section step-2">
+                    <div class="step-number">2</div>
+                    <div class="ca-section">
+                        <h3>Загрузка CA PEM файла</h3>
+                        <textarea id="caPemContent" placeholder="Нажмите кнопку ниже для выбора CA PEM файла..." rows="8" readonly></textarea>
+                        <button id="loadCaBtn" class="btn btn-secondary">Выбрать CA PEM файл</button>
+                        <input type="file" id="caFileInput" accept=".pem,.cer,.crt" style="display: none;">
+                        <p class="section-description">Выберите файл CA сертификата (CRT/PEM), который вы скачали на шаге 1</p>
+                    </div>
+                </div>
+
+                <div class="step-section step-3">
+                    <div class="step-number">3</div>
+                    <div class="actions">
+                        <h3 class="mt-2">Работа с документами</h3>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button id="createBtn" class="btn btn-primary">Создать новый документ</button>
+                    <p class="section-description">Создайте XML документы и подписывайте их с помощью NCALayer</p>
+                </div>
+
+                <div id="documents" class="documents-list">
+                    <!-- Documents will be loaded here via `document-card-template` -->
+                </div>
+
+                <template id="document-card-template">
+                    <div class="document-header">
+                        <div class="document-title-row">
+                            <div class="document-id">{{id}}</div>
+                            <div class="document-status {{statusClass}}">{{statusText}}</div>
+                        </div>
+                        <div class="document-meta">
+                            <span>{{lineCount}} строк</span>
+                            <span>{{sizeKB}} KB</span>
+                            {{createdAt}}
+                        </div>
+                    </div>
+                    <div class="document-content">
+                        {{displayContent}}
+                    </div>
+                    {{contentToggle}}
+                    <div class="document-actions">
+                        {{actions}}
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="logging-header">
+                <h3>Журнал</h3>
+                <button id="clearLogBtn" class="btn btn-secondary">Clear</button>
+            </div>
+            <div id="logOutput" class="log-output">
+                <!-- Logging messages will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Document Modal -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Создание нового документа</h2>
+            <textarea id="documentContent" placeholder="Введите содержимое XML..." rows="10"></textarea>
+            <div class="modal-actions">
+                <button id="saveBtn" class="btn btn-primary">Создать документ</button>
+                <button id="cancelBtn" class="btn btn-secondary">Отменить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

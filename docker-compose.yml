@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  knca-signer:
+    image: ghcr.io/gleb619/knca-signer:latest
+    ports:
+      - "8081:8080"
+    volumes:
+      # IMPORTANT: Ensure host directories ./certs and ./lib are owned by UID 100:GID 1000
+      # Run: sudo chown -R 100:1000 ./certs ./lib
+      # This matches the container's appuser UID/GID for proper volume write permissions
+      - ./certs:/app/certs
+
+      # IMPORTANT: For cryptographic functions to work, Kalkan libraries must be available in the `lib/` directory.
+      # Without them , the application will work in a limited mode.
+      - ./lib:/app/lib
+
+    # IMPORTANT: Or launch ap from `root` user - not recommended
+    #user: root
